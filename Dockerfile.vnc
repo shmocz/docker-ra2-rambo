@@ -1,0 +1,5 @@
+FROM alpine:3.16.2
+ARG USER_ID
+
+RUN apk add --no-cache tigervnc
+RUN adduser -D -u $USER_ID user

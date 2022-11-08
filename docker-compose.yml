@@ -3,22 +3,27 @@ services:
   vnc:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: shmocz/ra2-rambo:latest
+      dockerfile: Dockerfile.vnc
+    image: shmocz/vnc:latest
+    user: user
     command: 
-      sh -c "Xtigervnc :1 -depth 24 -geometry $$RESOLUTION -br -rfbport=5901 -SecurityTypes None -AcceptSetDesktopSize=off"
+      sh -c "Xvnc :1 -depth 24 -geometry $$RESOLUTION -br -rfbport=5901 -SecurityTypes None -AcceptSetDesktopSize=off"
     env_file:
       - variables.env
     ports:
       - "12001:5901"
   game:
+    build:
+      context: .
+      dockerfile: Dockerfile.game
+    stop_signal: SIGKILL
     image: shmocz/ra2-rambo:latest
     depends_on:
       - vnc
     user: user
     working_dir: /home/user/RA2
     command: 
-      sh -c "wine gamemd-spawn.exe -SPAWN"
+      wine gamemd-spawn.exe -SPAWN
     volumes:
       - ./wine-dir:/home/user/.wine
       - ./RA2:/home/user/RA2
